@@ -20,7 +20,7 @@ class CategoryController extends Controller
             $offset = 0;
             $search = [];
             $where = [];
-            $with = [];
+            $with = ['parent'];
             $join = [];
             $orderBy = [];
 
@@ -57,7 +57,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        $data['categories'] = Category::all();
+        return view('categories.create', $data);
     }
 
     /**
@@ -90,6 +91,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        $data['categories'] = Category::all();
         $data['category'] = $category;
         return view('categories.edit', $data);
     }
@@ -101,12 +103,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:categories,id',
         ]);
         try {
             $data = [
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'parent_id' => $request->parent_id ?? null
             ];
             $category->update($data);

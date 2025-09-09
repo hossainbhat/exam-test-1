@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +58,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $data['categories'] = Category::all();
+        return view('products.create', $data);
     }
 
     /**
@@ -95,8 +97,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $data['product'] = $product;
-        return view('categories.edit', $data);
+        $data['categories'] = Category::all();
+        $data['product'] = $product->load('categories');
+        return view('products.edit', $data);
     }
 
 
@@ -114,7 +117,6 @@ class ProductController extends Controller
         try {
             $data = [
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'description' => $request->description
             ];
             $product->update($data);
@@ -126,7 +128,7 @@ class ProductController extends Controller
             }
 
             DB::commit();
-            return sendSuccess('Successfully created !');
+            return sendSuccess('Successfully Update !');
         } catch (\Exception $e) {
             DB::rollBack();
             return sendError($e->getMessage());
@@ -139,7 +141,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         try {
-            $product->categories()()->detach();
+            $product->categories()->detach();
             $product->delete();
             return sendMessage('Successfully Delete');
         } catch (\Exception $e) {

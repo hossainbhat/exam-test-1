@@ -1,20 +1,51 @@
 @extends('layouts.app')
 @section('page_style')
-    
 @endsection
 @section('content')
     <!-- component -->
     <div class="antialiased font-sans">
         <div class="container mx-auto px-4 sm:px-8">
             <div class="py-8">
-                <div>
+                <div class="flex flex-row justify-between items-center">
                     <h2 class="text-2xl font-semibold leading-tight">Category List</h2>
+                    <a href="{{ route('categories.create') }}"><button type="button"
+                            class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add
+                            New</button></a>
                 </div>
 
                 <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                     <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                        <table class="min-w-full leading-normal" id="dataTable">
+                        <table id="dataTable" class="min-w-full divide-y divide-gray-200 text-sm text-left">
+                            <thead class="bg-gray-100 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3 font-semibold tracking-wide">
+                                        <span class="flex items-center">
+                                            Name
+                                            <svg class="w-4 h-4 ms-1" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                    stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4" />
+                                            </svg>
+                                        </span>
+                                    </th>
+                                    <th class="px-4 py-3 font-semibold tracking-wide">
+                                        <span class="flex items-center">
+                                            Parent
+                                            <svg class="w-4 h-4 ms-1" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                    stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4" />
+                                            </svg>
+                                        </span>
+                                    </th>
+                                    <th class="px-4 py-3 font-semibold tracking-wide text-right">Option</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+
+                            </tbody>
                         </table>
+
 
                     </div>
                 </div>
@@ -40,7 +71,7 @@
                     exportOptions: {
                         columns: [0, 1, 2]
                     },
-                    filename: 'Category List'
+                    filename: 'Skill List'
                 }],
                 columns: [{
                         'title': 'Name',
@@ -48,40 +79,32 @@
                         data: "name"
                     },
                     {
-                        'title': 'Option',
-                        data: 'parent_id',
+                        'title': 'Parent',
+                        data: 'parent.name',
                         render: function(data, type, row, col) {
                             let returnData = '';
-
-                            returnData += data ? data : 'N/A';
-
+                            returnData += data ? data : '-';
                             return returnData;
                         }
                     },
                     {
-                        title: 'Option',
+                        'title': 'Option',
                         data: 'id',
-                        class: 'text-right w-[10%]', 
+                        class: 'text-right width-5-per',
                         width: '10%',
                         render: function(data, type, row, col) {
                             let returnData = '';
 
-                            returnData += `
-                                <a href="${utlt.siteUrl('categories/' + data + '/edit')}"
-                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition">
-                                    Edit
-                                </a>
-                            `;
-                            returnData += `
-                                    <a href="javascript:void(0);" data-val="${data}" 
-                                        class="deleteItem inline-flex items-center px-2 py-1 ml-2 text-xs font-medium text-white bg-red-600 rounded-lg shadow hover:bg-red-700 transition">
-                                        Delete
-                                    </a>
-                                `;
+                            returnData += '<a href="' + utlt.siteUrl('categories/' + data +
+                                    '/edit') +
+                                '"><i class="fa-solid fa-pen-to-square"></i></a> ';
+
+                            returnData += '<a href="javascript:void(0);" data-val="' + data +
+                                '" class="deleteItem"><i class="fa-solid fa-trash"></i></a>';
+
                             return returnData;
                         }
-                    }
-
+                    },
                 ],
 
                 ajax: {
